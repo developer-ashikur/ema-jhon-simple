@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import fakeData from '../../fakeData';
+import { useHistory } from 'react-router';
+import happyImage from '../../images/giphy.gif';
 import { getDatabaseCart, removeFromDatabaseCart } from '../../utilities/databaseManager';
 import Cart from '../Cart/Cart';
 import ReviewItem from '../ReviewItem/ReviewItem';
 import './Review.css';
-import happyImage from '../../images/giphy.gif';
-import { useHistory } from 'react-router';
 
 
 const Review = () => {
@@ -20,12 +19,15 @@ const Review = () => {
         const savedCarts = getDatabaseCart();
         const productKeys = Object.keys(savedCarts);
 
-        const cartProducts = productKeys.map(key => {
-            const product = fakeData.find(pd => pd.key === key);
-            product.quantity = savedCarts[key];
-            return product;
+        fetch('https://enigmatic-sands-80972.herokuapp.com/productByKeys',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(productKeys) 
         })
-        setCart(cartProducts);
+        .then(res=>res.json())
+        .then(data=>{setCart(data)})
     },[]);
     const history = useHistory();
     const handleCheckoutOrder = () => {

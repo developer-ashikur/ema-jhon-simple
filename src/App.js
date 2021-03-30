@@ -4,8 +4,7 @@ import Shop from './Components/Shop/Shop';
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link
+  Route
 } from "react-router-dom";
 import Review from './Components/Review/Review';
 import Inventory from './Components/Inventory/Inventory';

@@ -40,6 +40,8 @@ function LogIn() {
           email: email,
           photo: photoURL
         })
+        setLoggedInUser(user);
+        history.replace(from);
       })
       .catch(error => {
         console.log(error);

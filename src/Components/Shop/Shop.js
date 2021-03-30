@@ -1,26 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import './Shop.css';
-import fakeData from '../../fakeData'
-import Products from '../Products/Products';
-import Cart from '../Cart/Cart';
-import { addToDatabaseCart, getDatabaseCart } from '../../utilities/databaseManager';
 import { Link } from 'react-router-dom';
+import { addToDatabaseCart, getDatabaseCart } from '../../utilities/databaseManager';
+import Cart from '../Cart/Cart';
+// import fakeData from '../../fakeData'
+import Products from '../Products/Products';
+import './Shop.css';
 
 const Shop = () => {
-    const first10 = fakeData.slice(0,10);
-    const [products, setProducts] = useState(first10);
+    // const first10 = fakeData.slice(0,10);
+    const [products, setProducts] = useState([]);
     const [cart, setCart] = useState([]);
+
+    useEffect(() =>{
+        fetch('https://enigmatic-sands-80972.herokuapp.com/products')
+        .then(res => res.json())
+        .then(data => setProducts(data))
+    },[])
 
     useEffect(() => {
         const savedCarts = getDatabaseCart();
         const productKeys = Object.keys(savedCarts);
 
-        const cartProducts = productKeys.map(key => {
-            const product = fakeData.find(pd => pd.key === key);
-            product.quantity = savedCarts[key];
-            return product;
+        fetch('https://enigmatic-sands-80972.herokuapp.com/productByKeys',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(productKeys) 
         })
-        setCart(cartProducts);
+        .then(res=>res.json())
+        .then(data=>{setCart(data)})
     }, [])
     const handleAddProduct= (product) => {
         const newCart = [...cart, product];
